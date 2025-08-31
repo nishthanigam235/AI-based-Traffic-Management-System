@@ -1,5 +1,14 @@
-vehicle_log.csv
-vehicle_counts_log.csv
-traffic_data.csv
+your_image.jpg
+traffic 3.avif
+traffic1.jpeg
+traffic2.webp
 __pycache__/
 dataset/
+static/dataset/
+traffic_data.csv
+.vscode/
+test.txt
+vehicle_log_1.csv
+vehicle_log_2.csv
+vehicle_log_3.csv
+vehicle_log_4.csv
