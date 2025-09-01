@@ -34,7 +34,7 @@ Traditional traffic lights follow fixed timers, often causing unnecessary waitin
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/AI-TrafficSense.git
+git clone https://github.com/Naitikg15/AI-TrafficSense.git
 cd AI-TrafficSense
 
 # Create virtual environment (recommended)
