@@ -21,10 +21,10 @@ model = YOLO('yolov8n.pt')
 
 # Video sources
 video_sources = {
-    "1": "dataset/cctv1.mp4",
-    "2": "dataset/cctv2.mp4",
-    "3": "dataset/cctv3.mp4",
-    "4": "dataset/cctv4.mp4"
+    "1": "dataset/cctv1.mp4", #Add your path to first video
+    "2": "dataset/cctv2.mp4", #Add your path to second video
+    "3": "dataset/cctv3.mp4", #Add your path to third video
+    "4": "dataset/cctv4.mp4"  #Add your path to fourth video
 }
 
 # Store counts and logs
