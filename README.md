@@ -62,7 +62,7 @@ python server.py
 
 ## 🤝 Contributors
 
--   👨‍💻 *Naitik Gupta* (Backend Development and Integration)
+-   👨‍💻 *Naitik Gupta* (Server Development and Integration)
 -   👩‍💻 *Nilansh Mishra* (Dataset Collection and Refining)
 -   👨‍💻 *Nistha Nigam* (GUI and Dashboard Designing)
 -   👨‍💻 *Ayushree* (Research and Testing)
