@@ -1,19 +1,14 @@
-# server.py
-import eventlet
-eventlet.monkey_patch()
-
 import cv2
-import threading
 import pandas as pd
 import time
 import heapq
 from flask import Flask, jsonify, send_file, render_template
-from flask_socketio import SocketIO
+
 from flask_cors import CORS
 from ultralytics import YOLO
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
+
 CORS(app)
 
 # Load YOLOv8 model
@@ -21,12 +16,20 @@ model = YOLO('yolov8n.pt')
 
 # Video sources
 video_sources = {
-    "1": "dataset/cctv1.mp4", #Add your path to first video
-    "2": "dataset/cctv2.mp4", #Add your path to second video
-    "3": "dataset/cctv3.mp4", #Add your path to third video
-    "4": "dataset/cctv4.mp4"  #Add your path to fourth video
+    "1":r"C:\Users\Hp\OneDrive\Desktop\AI-Traffic3\frame1.mp4", 
+    "2":r"C:\Users\Hp\OneDrive\Desktop\AI-Traffic3\frame2.mp4", 
+    "3":r"C:\Users\Hp\OneDrive\Desktop\AI-Traffic3\frame3.mp4", 
+    "4":r"C:\Users\Hp\OneDrive\Desktop\AI-Traffic3\frame4.mp4"  
 }
+caps = {vid: cv2.VideoCapture(path) for vid, path in video_sources.items()}
 
+
+cap =cv2.VideoCapture(video_sources["1"])
+print(cap.isOpened())
+if not cap.isOpened():
+    print("Error: Could not open video.")   
+else:
+    print("Video opened successfully.") 
 # Store counts and logs
 vehicle_counts = {vid: 0 for vid in video_sources}
 vehicle_logs = {vid: [] for vid in video_sources}
@@ -40,38 +43,37 @@ vehicle_classes = ['car', 'truck', 'bus', 'motorcycle', 'bicycle']
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html")    
 
 
-def process_video(video_id, video_path):
-    """Thread for vehicle detection"""
-    cap = cv2.VideoCapture(video_path)
+def process_video():
     while True:
-        ret, frame = cap.read()
-        if not ret:
-            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
-            continue
+        for vid, cap in caps.items():
+            ret, frame = cap.read()
+            if not ret:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                continue
 
-        results = model.predict(source=frame, conf=0.3, classes=None, verbose=False)
+            results = model.predict(source=frame, conf=0.3, verbose=False)
 
-        count = 0
-        for result in results:
-            boxes = result.boxes
-            for box in boxes:
-                cls = int(box.cls[0])
-                class_name = model.names[cls].lower()
-                if class_name in vehicle_classes:
-                    count += 1
+            count = 0
+            for r in results:
+                for box in r.boxes:
+                    cls = int(box.cls[0])
+                    name = model.names[cls].lower()
+                    if name in vehicle_classes:
+                        count += 1
 
-        # Update vehicle counts and logs
-        vehicle_counts[video_id] = count
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-        vehicle_logs[video_id].append({"timestamp": timestamp, "count": count})
+            vehicle_counts[vid] = count
+            vehicle_logs[vid].append({
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "count": count
+            })
 
-        # Send real-time counts to frontend
-        socketio.emit(f"vehicle_count_{video_id}", {"count": count})
+            print(f"Camera {vid} count = {count}")
 
-        socketio.sleep(0.5)
+        time.sleep(0.5)
+
 
 
 def traffic_light_controller():
@@ -102,24 +104,37 @@ def traffic_light_controller():
                 cycle_index += 1
 
         # Emit light states
-        socketio.emit("traffic_lights", traffic_lights)
-
-        socketio.sleep(2)  # Update every 2 seconds
+        print("Traffic lights:", traffic_lights)
 
 
-# Start threads for each video
-for vid, path in video_sources.items():
-    t = threading.Thread(target=process_video, args=(vid, path))
-    t.daemon = True
-    t.start()
+        time.sleep(2)  # Update every 2 seconds
 
-# Start traffic light controller thread
-light_thread = threading.Thread(target=traffic_light_controller)
-light_thread.daemon = True
-light_thread.start()
+
+#  # Start threads for each video
+# for vid, path in video_sources.items():
+#     t = threading.Thread(target=process_video, args=(vid, path))
+#     t.daemon = True
+#     t.start()
+
+# # Start traffic light controller thread
+# light_thread = threading.Thread(target=traffic_light_controller)
+# light_thread.daemon = True
+# light_thread.start() 
+
+
+
 
 
 # API Endpoints
+from flask import Response
+
+@app.route("/video/<video_id>")
+def video_feed(video_id):
+    return Response(
+        generate_frames(video_id),
+        mimetype="multipart/x-mixed-replace; boundary=frame"
+    )
+
 @app.route('/get_vehicle_counts', methods=['GET'])
 def get_vehicle_counts():
     return jsonify(vehicle_counts)
@@ -140,6 +155,31 @@ def light_status():
     """Return current traffic light states for frontend polling"""
     return jsonify(traffic_lights)
 
+def generate_frames(video_id):
+    cap = caps.get(video_id)
+    if cap is None:
+        return
 
+    while True:
+        success, frame = cap.read()
+        if not success:
+            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            continue
+
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
+
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+
+import threading
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=5000)
+
+    video_thread = threading.Thread(target=process_video,daemon=True)
+    video_thread.start()    
+
+
+    light_thread = threading.Thread(target=traffic_light_controller,daemon=True)
+    light_thread.start()
+    app.run(host="127.0.0.1", port=5000, debug=True)

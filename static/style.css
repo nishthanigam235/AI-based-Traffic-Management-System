@@ -166,3 +166,9 @@ canvas {
 .chart-box:hover {
   box-shadow: 0 0 15px #0f172a;
 }
+.video-feed {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 8px #1e3a8a;
+}
+

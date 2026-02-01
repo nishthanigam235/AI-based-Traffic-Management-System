@@ -6,7 +6,6 @@
   <title>AI-TrafficSense</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
   <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </head>
 <body>
@@ -27,8 +26,9 @@
       {% for i in range(1, 5) %}
       <div class="chart-box">
         <div class="info-box">
-          🚗 Vehicle Count {{ i }}: <span id="vehicleCount{{ i }}">0</span>
-          <button onclick="downloadCSV({ i });">⬇ Download CSV</button>
+          🚗 Frame Number {{ i }}: <span id="vehicleCount{{ i }}">0</span>
+          <button onclick="downloadCSV({i });">⬇ Download CSV</button>
+
         </div>
         <canvas id="vehicleChart{{ i }}"></canvas>
       </div>
@@ -41,7 +41,11 @@
 <div class="cctv-grid">
   {% for i in range(1, 5) %}
   <div class="cctv-item">
-    <video src="{{ url_for('static', filename='dataset/cctv' ~ i ~ '.mp4') }}" controls autoplay muted loop></video>
+    <img src="/video/{{ i }}" class="video-feed">
+    <!-- <video autoplay muted loop class="placeholder-video" id="placeholderVideo{{ i }}">
+      <source src="{{ url_for('static', filename='frame1.mp4') }}" type="video/mp4"> -->
+      
+
     <div class="camera-light">
       <div class="light red" id="red{{ i }}"></div>
       <div class="light green" id="green{{ i }}"></div>

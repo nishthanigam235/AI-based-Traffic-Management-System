@@ -1,4 +1,4 @@
-# 🚦 AI-TrafficSense
+pip# 🚦 AI-TrafficSense
 
 An **AI-powered traffic management system** that detects and counts vehicles in real-time using CCTV footage.  
 It applies **non-preemptive priority scheduling** to optimize traffic signals, reduce congestion, and improve urban mobility.  

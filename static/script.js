@@ -1,4 +1,4 @@
-const socket = io("http://localhost:5000");
+
 
 // Initialize charts for each video
 const chartConfigs = {};
@@ -25,20 +25,37 @@ for (let i = 1; i <= 4; i++) {
     });
 
     // Listen for vehicle count updates
-    socket.on(`vehicle_count_${i}`, (data) => {
-        document.getElementById(`vehicleCount${i}`).textContent = data.count;
-        const now = new Date().toLocaleTimeString();
-        const chart = chartConfigs[i];
-        chart.data.labels.push(now);
-        chart.data.datasets[0].data.push(data.count);
+}
+async function fetchVehicleCounts() {
+    const res = await fetch("/get_vehicle_counts");
+    const data = await res.json();
 
+    for (let i = 1; i <= 4; i++) {
+        document.getElementById(`vehicleCount${i}`).innerText = data[i];
+    }
+
+    updateCharts(data);
+}
+
+function updateCharts(data) {
+    const timeLabel = new Date().toLocaleTimeString();
+
+    for (let i = 1; i <= 4; i++) {
+        const chart = chartConfigs[i];
+
+        chart.data.labels.push(timeLabel);
+        chart.data.datasets[0].data.push(data[i]);
+
+        // keep only last 20 points
         if (chart.data.labels.length > 20) {
             chart.data.labels.shift();
             chart.data.datasets[0].data.shift();
         }
+
         chart.update();
-    });
+    }
 }
+
 
 // Function to update traffic lights on frontend
 function updateLights(lights) {
@@ -58,11 +75,13 @@ function updateLights(lights) {
         }
     }
 }
-
-// Listen for real-time traffic light updates via SocketIO
-socket.on("traffic_lights", (data) => {
+async function fetchLightStatus() {
+    const res = await fetch("/light_status");
+    const data = await res.json();
     updateLights(data);
-});
+}
+
+
 
 // Fallback polling in case SocketIO misses updates
 async function fetchLightStatus() {
@@ -82,3 +101,10 @@ fetchLightStatus(); // Initial call
 function downloadCSV(videoId) {
     window.location.href = `/download_logs/${videoId}`;
 }
+setInterval(() => {
+    fetchVehicleCounts();
+    fetchLightStatus();
+}, 2000);
+
+fetchVehicleCounts();
+fetchLightStatus();
