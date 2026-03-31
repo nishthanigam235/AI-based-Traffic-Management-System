@@ -49,9 +49,6 @@ serverbox.py
 ```
 ---
 
-## 🎥 Demo
-
-👉 [Add your demo video link here]
 
 ---
 
@@ -66,9 +63,7 @@ serverbox.py
 ## 👩‍💻 Contributers
 
 **Nistha Nigam**
-**Naitik Gupta**
-**Nilansh Mishra**
-**Ayushree**
+
 
 ---
 
