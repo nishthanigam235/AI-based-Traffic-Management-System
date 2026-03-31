@@ -1,68 +1,75 @@
-pip# 🚦 AI-TrafficSense
+# 🚦 AI-Based Traffic Management System
 
-An **AI-powered traffic management system** that detects and counts vehicles in real-time using CCTV footage.  
-It applies **non-preemptive priority scheduling** to optimize traffic signals, reduce congestion, and improve urban mobility.  
+## 📌 Overview
 
----
-
-## 📖 Overview
-Traditional traffic lights follow fixed timers, often causing unnecessary waiting and fuel wastage.  
-**AI-TrafficSense** uses computer vision and intelligent scheduling to dynamically control signals based on real-time traffic density.
+An intelligent traffic management system that uses real-time video input to detect vehicle density and dynamically control traffic signals, reducing congestion and improving road efficiency.
 
 ---
 
-## ✨ Features
-- 🖥️ **Real-time vehicle detection** using YOLO + OpenCV  
-- 🚗 **Lane-wise vehicle counting** (supports up to 4 lanes)  
-- ⏱️ **Smart signal control** using **Non-preemptive Priority Scheduling**  
-- 💰 **Cost-effective** (CCTV + Raspberry Pi/Jetson Nano compatible)  
-- 🖼️ **GUI** built with HTML/CSS for ease of use  
-- 📊 Future-ready for IoT + Smart City integration  
+## 🚀 Features
+
+* 🚗 Real-time vehicle detection using AI
+* 📊 Dynamic traffic light control based on congestion
+* 🎥 Multi-lane video processing
+* ⚡ Priority-based signal switching logic
+* 🌐 Interactive dashboard for visualization
 
 ---
 
 ## 🛠️ Tech Stack
-- **Python 3.10+**
-- **OpenCV** (image/video processing)  
-- **YOLO (You Only Look Once)** for object detection  
-- **HTML/CSS + JavaScript** for GUI  
-- **Flask / Streamlit** (for dashboard integration)  
+
+* Python
+* OpenCV
+* Streamlit / Flask
+* NumPy
+* Machine Learning (YOLO / custom model)
 
 ---
 
 ## ⚙️ Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/Naitikg15/AI-TrafficSense.git
-cd AI-TrafficSense
-
-# Create virtual environment (recommended)
-python -m venv env
-# Activate
-source env/bin/activate     # On Windows: env\Scripts\activate
-
-#Use your own dataset
-In server.py, add the path to your video files for all the 4 lanes, or download the pre- recorded dataset folder from  ' https://drive.google.com/drive/folders/134TdWc4mrhfiK5dJ13Q8RjLlWcXD733q?usp=drive_link '
-
-# Install dependencies
+git clone https://github.com/nishthanigam235/AI-based-Traffic-Management-System.git
+cd AI-based-Traffic-Management-System
 pip install -r requirements.txt
-
-
-# Run the application
-python server.py
 ```
 
-## 📌 Future Enhancements
+---
 
--   🔴 Live dashboard with charts & real-time data
--   🚓 Emergency vehicle priority detection
--   🌐 IoT sensor integration
--   📡 Cloud-based deployment for smart cities
+## ▶️ Run the Project
 
-## 🤝 Contributors
+```bash
+streamlit run app.py
+```
 
--   👨‍💻 *Naitik Gupta* (Server Development and Integration)
--   👩‍💻 *Nilansh Mishra* (Dataset Collection and Refining)
--   👨‍💻 *Nistha Nigam* (GUI and Dashboard Designing)
--   👨‍💻 *Ayushree* (Research and Testing)
+OR
+
+```bash
+serverbox.py
+```
+---
+
+## 🎥 Demo
+
+👉 [Add your demo video link here]
+
+---
+
+## 📌 Future Improvements
+
+* Integration with live CCTV feeds
+* Cloud deployment for real-time scalability
+* Smart city integration
+
+---
+
+## 👩‍💻 Contributers
+
+**Nistha Nigam**
+**Naitik Gupta**
+**Nilansh Mishra**
+**Ayushree**
+
+---
+
+## ⭐ If you like this project, give it a star!
